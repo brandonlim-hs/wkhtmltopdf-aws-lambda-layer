@@ -1,0 +1,7 @@
+service: wkhtmltopdf-aws-lambda-layer
+provider:
+  name: aws
+layers:
+  wkhtmltopdf:
+    package:
+      artifact: layer.zip
