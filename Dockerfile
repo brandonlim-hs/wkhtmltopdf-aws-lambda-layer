@@ -2,7 +2,8 @@ FROM amazonlinux:2
 
 RUN yum install -y \
     rpmdevtools \
-    wget
+    wget \
+    yum-utils
 
 ENV LAYER_DIR="/layer"
 ENV LAYER_ZIP="layer.zip"
@@ -12,6 +13,7 @@ ENV WKHTMLTOPDF_BIN="$TEMP_DIR/wkhtmltopdf.rpm"
 # Download wkhtmltopdf and its dependencies
 RUN wget -O $WKHTMLTOPDF_BIN https://downloads.wkhtmltopdf.org/0.12/0.12.5/wkhtmltox-0.12.5-1.centos7.$(arch).rpm \
     && yum install --downloadonly --downloaddir=$TEMP_DIR $WKHTMLTOPDF_BIN
+RUN yumdownloader --destdir $TEMP_DIR --archlist=$(arch) expat
 
 # Extract all rpm files
 RUN cd $TEMP_DIR && rpmdev-extract *rpm
