@@ -1,6 +1,12 @@
 service: wkhtmltopdf-aws-lambda-layer
 provider:
   name: aws
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - lambda:AddLayerVersionPermission
+        - lambda:GetLayerVersion
+      Resource: "*"
 layers:
   wkhtmltopdf:
     package:
