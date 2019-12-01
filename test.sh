@@ -5,6 +5,11 @@ ERRORS=0
 LAYER_DIR="$PWD/layer"
 LAYER_ZIP="layer.zip"
 
+if [ ! -s $LAYER_ZIP ]; then
+    printf "\e[31m%s\n\e[0m" "cannot find or open $LAYER_ZIP"
+    exit 1
+fi
+
 rm -rf $LAYER_DIR && unzip $LAYER_ZIP -d $LAYER_DIR 1>/dev/null
 
 # Test layer on:
