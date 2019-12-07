@@ -13,6 +13,26 @@ fi
 rm -rf $LAYER_DIR && unzip $LAYER_ZIP -d $LAYER_DIR 1>/dev/null
 
 # Test layer on:
+#   operating system: Amazon Linux, runtime: Java 8
+#   operating system: Amazon Linux 2, runtime: Java 11
+JAVA_RUNTIMES="java8 java11"
+JAVA_DIR="$PWD/tests/java"
+
+# Package Java file. See: https://docs.aws.amazon.com/lambda/latest/dg/create-deployment-pkg-zip-java.html
+rm -rf "$JAVA_DIR/build" && docker run --rm -v "$JAVA_DIR":/app -w /app gradle:6.0 gradle build -q
+
+for runtime in $JAVA_RUNTIMES; do
+    printf "%s\n" "Runtime: $runtime"
+    docker run --rm \
+        -v "$JAVA_DIR/build/package":/var/task:ro,delegated \
+        -v "$LAYER_DIR":/opt:ro,delegated \
+        lambci/lambda:$runtime \
+        example.Example::handleRequest
+    if [ $? -ne 0 ]; then ERRORS+=1; fi
+    printf "\n"
+done
+
+# Test layer on:
 #   operating system: Amazon Linux, runtime: Node.js 8.10
 #   operating system: Amazon Linux 2, runtime: Node.js 10
 #   operating system: Amazon Linux 2, runtime: Node.js 12
