@@ -49,6 +49,23 @@ for runtime in $NODEJS_RUNTIMES; do
     printf "\n"
 done
 
+# Test layer on:
+#   operating system: Amazon Linux, runtime: Python 3.6
+#   operating system: Amazon Linux, runtime: Python 3.7
+#   operating system: Amazon Linux 2, runtime: Python 3.8
+PYTHON_RUNTIMES="python3.6 python3.7 python3.8"
+
+for runtime in $PYTHON_RUNTIMES; do
+    printf "%s\n" "Runtime: $runtime"
+    docker run --rm \
+        -v "$PWD/tests/python":/var/task:ro,delegated \
+        -v "$LAYER_DIR":/opt:ro,delegated \
+        lambci/lambda:$runtime \
+        lambda_function.lambda_handler
+    if [ $? -ne 0 ]; then ERRORS+=1; fi
+    printf "\n"
+done
+
 rm -rf $LAYER_DIR
 
 if [ $ERRORS -gt 0 ]; then
