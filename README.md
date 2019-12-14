@@ -49,3 +49,7 @@ Refer to the following scripts to build and publish your own wkhtmltopdf layer.
 1. Run `./build.sh` to build a new layer zip.
 2. Run `./test.sh` to test the layer zip.
 3. Run `./publish.sh` to publish the layer zip to regions specified in `/config/regions.txt`.
+
+## Fonts
+
+See [fonts-aws-lambda-layer](https://github.com/brandonlim-hs/fonts-aws-lambda-layer) to use fonts on AWS Lambda.
