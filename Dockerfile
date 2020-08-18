@@ -9,9 +9,12 @@ WORKDIR /tmp
 
 # Download wkhtmltopdf and its dependencies. Then extract all rpm files.
 ENV WKHTMLTOPDF_BIN="wkhtmltopdf.rpm"
-RUN wget -O $WKHTMLTOPDF_BIN https://downloads.wkhtmltopdf.org/0.12/0.12.5/wkhtmltox-0.12.5-1.centos7.$(arch).rpm \
+RUN wget -O $WKHTMLTOPDF_BIN https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox-0.12.5-1.centos7.$(arch).rpm \
     && yum install --downloadonly --downloaddir=/tmp $WKHTMLTOPDF_BIN \
-    && yumdownloader --archlist=$(arch) expat \
+    && yumdownloader --archlist=$(arch) \
+    bzip2-libs \
+    expat \
+    libuuid \
     && rpmdev-extract *rpm
 
 WORKDIR /layer

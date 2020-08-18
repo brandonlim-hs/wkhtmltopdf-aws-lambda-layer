@@ -1,8 +1,10 @@
 #!/bin/bash
 
-ARN_DIR="arns"
+VERSION="0.12.5"
+ARN_DIR="arns/$VERSION"
 ARN_FILE="$ARN_DIR/wkhtmltopdf.csv"
-LAYER_NAME="wkhtmltopdf"
+LAYER_NAME="wkhtmltopdf-$VERSION"
+LAYER_NAME=${LAYER_NAME//./_} # Replace . with _ , since . is not allow
 LAYER_ZIP="layer.zip"
 REGIONS=$(cat config/regions.txt)
 
@@ -18,7 +20,7 @@ for region in $REGIONS; do
     printf "%s\n" "Region: $region"
     OUTPUT=$(
         aws lambda publish-layer-version \
-            --description "wkhtmltopdf 0.12.5 (with patched qt)" \
+            --description "wkhtmltopdf $VERSION (with patched qt)" \
             --layer-name $LAYER_NAME \
             --output text \
             --query "[LayerVersionArn, Version]" \
@@ -35,7 +37,8 @@ for region in $REGIONS; do
         --query "Statement" \
         --region "$region" \
         --statement-id public \
-        --version-number "$LAYER_VERSION"
+        --version-number "$LAYER_VERSION" \
+        &>/dev/null
     echo "$region,$LAYER_VERSION_ARN" >>$ARN_FILE
     printf "\n"
 done
