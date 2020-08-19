@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION="0.12.5"
+VERSION="0.12.6"
 ARN_DIR="arns/$VERSION"
 ARN_FILE="$ARN_DIR/wkhtmltopdf.csv"
 LAYER_NAME="wkhtmltopdf-$VERSION"
