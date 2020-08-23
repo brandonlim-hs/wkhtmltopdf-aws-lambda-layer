@@ -8,9 +8,7 @@ This layer supports both _Amazon Linux_ and _Amazon Linux 2_.
 
 ## Getting Started
 
-Add this layer to Lambda function by providing the layer version ARN.
-
-`arn:aws:lambda:{region}:347599033421:layer:wkhtmltopdf:1`
+Add this layer to Lambda function by providing the [layer version ARN](#version-arns).
 
 ## Version ARNs
 
