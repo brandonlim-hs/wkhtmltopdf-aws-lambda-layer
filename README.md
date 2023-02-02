@@ -1,55 +1,30 @@
-# wkhtmltopdf as AWS Lambda Layer
+# TwoMinShift PDF Generator Lambda
 
-[wkhtmltopdf](https://wkhtmltopdf.org/) with dependencies published as [AWS Lambda Layer](https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html).
+## Build
 
-## Operating Systems
+To build the layer, run `layer_build.sh`. This will create layer.zip. Docker required.
 
-This layer supports both _Amazon Linux_ and _Amazon Linux 2_.
+## Publish
 
-## Getting Started
+Ensure:
+* `/arns/0.12.6/wkhtmltopdf.csv` contains your lambda's ARN, for each region to deploy to.
+* `/config/regions.txt` contains the regions you want to deploy to.
 
-Add this layer to Lambda function by providing the [layer version ARN](#version-arns).
+Then run `layer_publish.sh`.
 
-## Version ARNs
+## Lambda Function
 
-| Region         | ARN                                                                   |
-| -------------- | --------------------------------------------------------------------- |
-| ap-east-1      | arn:aws:lambda:ap-east-1:347599033421:layer:wkhtmltopdf-0_12_6:1      |
-| ap-northeast-1 | arn:aws:lambda:ap-northeast-1:347599033421:layer:wkhtmltopdf-0_12_6:1 |
-| ap-northeast-2 | arn:aws:lambda:ap-northeast-2:347599033421:layer:wkhtmltopdf-0_12_6:1 |
-| ap-south-1     | arn:aws:lambda:ap-south-1:347599033421:layer:wkhtmltopdf-0_12_6:1     |
-| ap-southeast-1 | arn:aws:lambda:ap-southeast-1:347599033421:layer:wkhtmltopdf-0_12_6:1 |
-| ap-southeast-2 | arn:aws:lambda:ap-southeast-2:347599033421:layer:wkhtmltopdf-0_12_6:1 |
-| ca-central-1   | arn:aws:lambda:ca-central-1:347599033421:layer:wkhtmltopdf-0_12_6:1   |
-| eu-central-1   | arn:aws:lambda:eu-central-1:347599033421:layer:wkhtmltopdf-0_12_6:1   |
-| eu-north-1     | arn:aws:lambda:eu-north-1:347599033421:layer:wkhtmltopdf-0_12_6:1     |
-| eu-west-1      | arn:aws:lambda:eu-west-1:347599033421:layer:wkhtmltopdf-0_12_6:1      |
-| eu-west-2      | arn:aws:lambda:eu-west-2:347599033421:layer:wkhtmltopdf-0_12_6:1      |
-| eu-west-3      | arn:aws:lambda:eu-west-3:347599033421:layer:wkhtmltopdf-0_12_6:1      |
-| sa-east-1      | arn:aws:lambda:sa-east-1:347599033421:layer:wkhtmltopdf-0_12_6:1      |
-| us-east-1      | arn:aws:lambda:us-east-1:347599033421:layer:wkhtmltopdf-0_12_6:1      |
-| us-east-2      | arn:aws:lambda:us-east-2:347599033421:layer:wkhtmltopdf-0_12_6:1      |
-| us-west-1      | arn:aws:lambda:us-west-1:347599033421:layer:wkhtmltopdf-0_12_6:1      |
-| us-west-2      | arn:aws:lambda:us-west-2:347599033421:layer:wkhtmltopdf-0_12_6:1      |
+With the layer published create your the function.  Content of the pdf function exists at `/functions/pdf/index.js`.  Copy the contents into the AWS code editor and deploy it.
 
-See `/arns` directory for other wkhtmltopdf versions.
+## Lambda Function Tests
 
-## Usage
+Ensure wkhtmltopdf is installed, then run tests for the pdf lambda function with:
 
-wkhtmltopdf binary will be extracted to the `/opt/bin`.
+```
+$ cd functions/test
+$ node test
+```
 
-wkhtmltopdf can be executed directly as a command line binary, or via a wrapper.
+## AWS Function Configuration
 
-Refer to `/tests` directory for example usage.
-
-## Build, Test, Publish
-
-Refer to the following scripts to build and publish your own wkhtmltopdf layer.
-
-1. Run `./build.sh` to build a new layer zip.
-2. Run `./test.sh` to test the layer zip.
-3. Run `./publish.sh` to publish the layer zip to regions specified in `/config/regions.txt`.
-
-## Fonts
-
-See [fonts-aws-lambda-layer](https://github.com/brandonlim-hs/fonts-aws-lambda-layer) to use fonts on AWS Lambda.
+The pdf function consumes ~120MB over 2-10 seconds to generate a pdf for a basic html template and signature. AWS Lambda will kill the function if it consumes more than its allotted max memory or max time. The cloudwatch logs will show if this is happening.  The function configuration for memory and time should be set appropriately.

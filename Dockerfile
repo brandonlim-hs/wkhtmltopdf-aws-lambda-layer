@@ -21,7 +21,7 @@ WORKDIR /layer
 
 # Copy wkhtmltopdf binary and dependency libraries for packaging
 RUN mkdir -p {bin,lib} \
-    && cp /tmp/wkhtml*/usr/local/bin/* bin \
+    && cp /tmp/wkhtml*/usr/local/bin/wkhtmltopdf bin \
     && cp /tmp/*/usr/lib64/* lib || :
 
 # Zip files
